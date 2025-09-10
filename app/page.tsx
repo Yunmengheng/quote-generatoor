@@ -1,103 +1,89 @@
-import Image from "next/image";
+"use client";
+
+import { useState } from "react";
 
 export default function Home() {
-  return (
-    <div className="font-sans grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20">
-      <main className="flex flex-col gap-[32px] row-start-2 items-center sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol className="font-mono list-inside list-decimal text-sm/6 text-center sm:text-left">
-          <li className="mb-2 tracking-[-.01em]">
-            Get started by editing{" "}
-            <code className="bg-black/[.05] dark:bg-white/[.06] font-mono font-semibold px-1 py-0.5 rounded">
-              app/page.tsx
-            </code>
-            .
-          </li>
-          <li className="tracking-[-.01em]">
-            Save and see your changes instantly.
-          </li>
-        </ol>
+  const [quote, setQuote] = useState("Click the button below to get an inspiring quote!");
 
-        <div className="flex gap-4 items-center flex-col sm:flex-row">
-          <a
-            className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:w-auto"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
-            />
-            Deploy now
-          </a>
-          <a
-            className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 w-full sm:w-auto md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Read our docs
-          </a>
-        </div>
-      </main>
-      <footer className="row-start-3 flex gap-[24px] flex-wrap items-center justify-center">
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
+  const quotes = [
+    "The only way to do great work is to love what you do. - Steve Jobs",
+    "Innovation distinguishes between a leader and a follower. - Steve Jobs",
+    "Life is what happens to you while you're busy making other plans. - John Lennon",
+    "The future belongs to those who believe in the beauty of their dreams. - Eleanor Roosevelt",
+    "It is during our darkest moments that we must focus to see the light. - Aristotle",
+    "The only impossible journey is the one you never begin. - Tony Robbins",
+    "Success is not final, failure is not fatal: it is the courage to continue that counts. - Winston Churchill",
+    "The way to get started is to quit talking and begin doing. - Walt Disney"
+  ];
+
+  const getRandomQuote = () => {
+    const randomIndex = Math.floor(Math.random() * quotes.length);
+    setQuote(quotes[randomIndex]);
+  };
+
+  return (
+    <div 
+      className="min-h-screen flex flex-col items-center justify-center p-8"
+      style={{
+        background: `linear-gradient(135deg, #E8FFD7 0%, #93DA97 50%, #5E936C 100%)`
+      }}
+    >
+      {/* Header */}
+      <div className="text-center mb-12">
+        <h1 
+          className="text-4xl md:text-5xl font-bold mb-4"
+          style={{ color: '#3E5F44' }}
         >
-          <Image
-            aria-hidden
-            src="/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
-          />
-          Learn
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
+          Quote Generator
+        </h1>
+        <p 
+          className="text-lg"
+          style={{ color: '#3E5F44' }}
         >
-          <Image
-            aria-hidden
-            src="/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
+          Discover wisdom with the click of a button
+        </p>
+      </div>
+
+      {/* Quote Display Box */}
+      <div 
+        className="rounded-2xl shadow-lg p-8 md:p-12 max-w-2xl w-full mx-4 mb-8"
+        style={{ backgroundColor: '#E8FFD7' }}
+      >
+        <p 
+          className="text-lg md:text-xl text-center leading-relaxed"
+          style={{ color: '#3E5F44' }}
         >
-          <Image
-            aria-hidden
-            src="/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
-      </footer>
+          {quote}
+        </p>
+      </div>
+
+      {/* Get Random Quote Button */}
+      <button
+        onClick={getRandomQuote}
+        className="font-semibold py-4 px-8 rounded-full transition-all duration-300 shadow-lg hover:shadow-xl transform hover:scale-105"
+        style={{ 
+          backgroundColor: '#3E5F44',
+          color: '#E8FFD7'
+        }}
+        onMouseEnter={(e) => {
+          (e.target as HTMLButtonElement).style.backgroundColor = '#5E936C';
+        }}
+        onMouseLeave={(e) => {
+          (e.target as HTMLButtonElement).style.backgroundColor = '#3E5F44';
+        }}
+      >
+        Get Random Quote
+      </button>
+
+      {/* Footer */}
+      <div className="mt-16 text-center">
+        <p 
+          className="text-sm"
+          style={{ color: '#3E5F44' }}
+        >
+          © 2025 Quote Generator
+        </p>
+      </div>
     </div>
   );
 }
