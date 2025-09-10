@@ -5,6 +5,7 @@ import { supabase, Quote } from "../lib/supabase";
 
 export default function Home() {
   const [quote, setQuote] = useState("Click the button below to get an inspiring quote!");
+  const [author, setAuthor] = useState("");
   const [quotes, setQuotes] = useState<Quote[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -74,6 +75,7 @@ export default function Home() {
   const getRandomQuote = async () => {
     if (quotes.length === 0) {
       setQuote("No quotes available. Please try again later.");
+      setAuthor("");
       return;
     }
 
@@ -83,11 +85,13 @@ export default function Home() {
       // Get a random quote from the quotes array
       const randomIndex = Math.floor(Math.random() * quotes.length);
       const selectedQuote = quotes[randomIndex];
-      setQuote(`${selectedQuote.text} - ${selectedQuote.author}`);
+      setQuote(selectedQuote.text);
+      setAuthor(selectedQuote.author);
       setError(null);
     } catch (error) {
       console.error('Error getting random quote:', error);
       setError('Failed to get quote');
+      setAuthor("");
     } finally {
       setLoading(false);
     }
@@ -122,11 +126,19 @@ export default function Home() {
         style={{ backgroundColor: '#E8FFD7' }}
       >
         <p 
-          className="text-lg md:text-xl text-center leading-relaxed"
+          className="text-lg md:text-xl text-center leading-relaxed mb-4"
           style={{ color: '#3E5F44' }}
         >
-          {quote}
+          "{quote}"
         </p>
+        {author && (
+          <p 
+            className="text-base md:text-lg text-center font-medium"
+            style={{ color: '#5E936C' }}
+          >
+            — {author} —
+          </p>
+        )}
         {error && (
           <p 
             className="text-sm text-center mt-4"
@@ -166,7 +178,7 @@ export default function Home() {
           className="text-sm"
           style={{ color: '#3E5F44' }}
         >
-          © 2025 Quote Generator
+          © Quote Generator by MengHeng
         </p>
       </div>
     </div>
