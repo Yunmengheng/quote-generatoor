@@ -84,3 +84,5 @@ A modern, responsive Quote Generator web application that delivers inspirational
 - **Secondary Green:** `#5E936C` (Medium green for accents)
 - **Light Green:** `#93DA97` (Background gradients)
 - **Mint Green:** `#E8FFD7` (Quote box background)
+
+---
