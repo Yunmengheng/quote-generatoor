@@ -58,7 +58,6 @@ A modern, responsive Quote Generator web application that delivers inspirational
 - **Styling:** Tailwind CSS with custom color palette and responsive design
 - **User Interface:** Clean, modern design with smooth animations and hover effects
 
-```
 
 ### Data Flow
 1. **Frontend** → Fetches quotes from Supabase on component mount
@@ -84,5 +83,3 @@ A modern, responsive Quote Generator web application that delivers inspirational
 - **Secondary Green:** `#5E936C` (Medium green for accents)
 - **Light Green:** `#93DA97` (Background gradients)
 - **Mint Green:** `#E8FFD7` (Quote box background)
-
----
