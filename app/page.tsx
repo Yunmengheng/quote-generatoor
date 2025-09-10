@@ -1,24 +1,96 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { supabase, Quote } from "../lib/supabase";
 
 export default function Home() {
   const [quote, setQuote] = useState("Click the button below to get an inspiring quote!");
+  const [quotes, setQuotes] = useState<Quote[]>([]);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
-  const quotes = [
-    "The only way to do great work is to love what you do. - Steve Jobs",
-    "Innovation distinguishes between a leader and a follower. - Steve Jobs",
-    "Life is what happens to you while you're busy making other plans. - John Lennon",
-    "The future belongs to those who believe in the beauty of their dreams. - Eleanor Roosevelt",
-    "It is during our darkest moments that we must focus to see the light. - Aristotle",
-    "The only impossible journey is the one you never begin. - Tony Robbins",
-    "Success is not final, failure is not fatal: it is the courage to continue that counts. - Winston Churchill",
-    "The way to get started is to quit talking and begin doing. - Walt Disney"
-  ];
+  // Fetch all quotes from Supabase on component mount
+  useEffect(() => {
+    fetchQuotes();
+  }, []);
 
-  const getRandomQuote = () => {
-    const randomIndex = Math.floor(Math.random() * quotes.length);
-    setQuote(quotes[randomIndex]);
+  const fetchQuotes = async () => {
+    try {
+      const { data, error } = await supabase
+        .from('quotes')
+        .select('*');
+      
+      if (error) {
+        throw error;
+      }
+      
+      setQuotes(data || []);
+      
+      // If no quotes in database, seed with initial quotes
+      if (!data || data.length === 0) {
+        await seedQuotes();
+      }
+    } catch (error) {
+      console.error('Error fetching quotes:', error);
+      setError('Failed to fetch quotes from database');
+      // Fallback to local quotes if database fails
+      setQuotes([
+        { id: 1, text: "The only way to do great work is to love what you do.", author: "Steve Jobs", created_at: "" },
+        { id: 2, text: "Innovation distinguishes between a leader and a follower.", author: "Steve Jobs", created_at: "" },
+        { id: 3, text: "Life is what happens to you while you're busy making other plans.", author: "John Lennon", created_at: "" },
+        { id: 4, text: "The future belongs to those who believe in the beauty of their dreams.", author: "Eleanor Roosevelt", created_at: "" },
+      ]);
+    }
+  };
+
+  const seedQuotes = async () => {
+    const initialQuotes = [
+      { text: "The only way to do great work is to love what you do.", author: "Steve Jobs" },
+      { text: "Innovation distinguishes between a leader and a follower.", author: "Steve Jobs" },
+      { text: "Life is what happens to you while you're busy making other plans.", author: "John Lennon" },
+      { text: "The future belongs to those who believe in the beauty of their dreams.", author: "Eleanor Roosevelt" },
+      { text: "It is during our darkest moments that we must focus to see the light.", author: "Aristotle" },
+      { text: "The only impossible journey is the one you never begin.", author: "Tony Robbins" },
+      { text: "Success is not final, failure is not fatal: it is the courage to continue that counts.", author: "Winston Churchill" },
+      { text: "The way to get started is to quit talking and begin doing.", author: "Walt Disney" }
+    ];
+
+    try {
+      const { data, error } = await supabase
+        .from('quotes')
+        .insert(initialQuotes)
+        .select();
+      
+      if (error) {
+        throw error;
+      }
+      
+      setQuotes(data || []);
+    } catch (error) {
+      console.error('Error seeding quotes:', error);
+    }
+  };
+
+  const getRandomQuote = async () => {
+    if (quotes.length === 0) {
+      setQuote("No quotes available. Please try again later.");
+      return;
+    }
+
+    setLoading(true);
+    
+    try {
+      // Get a random quote from the quotes array
+      const randomIndex = Math.floor(Math.random() * quotes.length);
+      const selectedQuote = quotes[randomIndex];
+      setQuote(`${selectedQuote.text} - ${selectedQuote.author}`);
+      setError(null);
+    } catch (error) {
+      console.error('Error getting random quote:', error);
+      setError('Failed to get quote');
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -55,24 +127,37 @@ export default function Home() {
         >
           {quote}
         </p>
+        {error && (
+          <p 
+            className="text-sm text-center mt-4"
+            style={{ color: '#d32f2f' }}
+          >
+            {error}
+          </p>
+        )}
       </div>
 
       {/* Get Random Quote Button */}
       <button
         onClick={getRandomQuote}
-        className="font-semibold py-4 px-8 rounded-full transition-all duration-300 shadow-lg hover:shadow-xl transform hover:scale-105"
+        disabled={loading}
+        className="font-semibold py-4 px-8 rounded-full transition-all duration-300 shadow-lg hover:shadow-xl transform hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none"
         style={{ 
-          backgroundColor: '#3E5F44',
+          backgroundColor: loading ? '#5E936C' : '#3E5F44',
           color: '#E8FFD7'
         }}
         onMouseEnter={(e) => {
-          (e.target as HTMLButtonElement).style.backgroundColor = '#5E936C';
+          if (!loading) {
+            (e.target as HTMLButtonElement).style.backgroundColor = '#5E936C';
+          }
         }}
         onMouseLeave={(e) => {
-          (e.target as HTMLButtonElement).style.backgroundColor = '#3E5F44';
+          if (!loading) {
+            (e.target as HTMLButtonElement).style.backgroundColor = '#3E5F44';
+          }
         }}
       >
-        Get Random Quote
+        {loading ? 'Loading...' : 'Get Random Quote'}
       </button>
 
       {/* Footer */}
