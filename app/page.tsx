@@ -26,56 +26,18 @@ export default function Home() {
       }
       
       setQuotes(data || []);
-      
-      // If no quotes in database, seed with initial quotes
-      if (!data || data.length === 0) {
-        await seedQuotes();
-      }
     } catch (error) {
       console.error('Error fetching quotes:', error);
-      setError('Failed to fetch quotes from database');
-      // Fallback to local quotes if database fails
-      setQuotes([
-        { id: 1, text: "The only way to do great work is to love what you do.", author: "Steve Jobs", created_at: "" },
-        { id: 2, text: "Innovation distinguishes between a leader and a follower.", author: "Steve Jobs", created_at: "" },
-        { id: 3, text: "Life is what happens to you while you're busy making other plans.", author: "John Lennon", created_at: "" },
-        { id: 4, text: "The future belongs to those who believe in the beauty of their dreams.", author: "Eleanor Roosevelt", created_at: "" },
-      ]);
-    }
-  };
-
-  const seedQuotes = async () => {
-    const initialQuotes = [
-      { text: "The only way to do great work is to love what you do.", author: "Steve Jobs" },
-      { text: "Innovation distinguishes between a leader and a follower.", author: "Steve Jobs" },
-      { text: "Life is what happens to you while you're busy making other plans.", author: "John Lennon" },
-      { text: "The future belongs to those who believe in the beauty of their dreams.", author: "Eleanor Roosevelt" },
-      { text: "It is during our darkest moments that we must focus to see the light.", author: "Aristotle" },
-      { text: "The only impossible journey is the one you never begin.", author: "Tony Robbins" },
-      { text: "Success is not final, failure is not fatal: it is the courage to continue that counts.", author: "Winston Churchill" },
-      { text: "The way to get started is to quit talking and begin doing.", author: "Walt Disney" }
-    ];
-
-    try {
-      const { data, error } = await supabase
-        .from('quotes')
-        .insert(initialQuotes)
-        .select();
-      
-      if (error) {
-        throw error;
-      }
-      
-      setQuotes(data || []);
-    } catch (error) {
-      console.error('Error seeding quotes:', error);
+      setError('Failed to connect to database. Please check your connection and try again.');
+      setQuotes([]);
     }
   };
 
   const getRandomQuote = async () => {
     if (quotes.length === 0) {
-      setQuote("No quotes available. Please try again later.");
+      setQuote("No quotes available in database. Please check your Supabase connection.");
       setAuthor("");
+      setError("Database connection required");
       return;
     }
 
